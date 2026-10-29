@@ -31,7 +31,7 @@ function visibleLoop(el, frame) {
   let last = 0;
   let t = 0;
   const tick = (now) => {
-    const dt = Math.min(64, now - last);
+    const dt = Math.min(250, now - last);
     last = now;
     t += dt;
     frame(t, dt);
@@ -856,6 +856,207 @@ function initDescent(canvas) {
   else visibleLoop(canvas, frame);
 }
 
+/* ---------- Publication thumbnails: one pixel motif per paper --------- */
+
+// Each motif draws onto a cell grid: `cell(x, y, color, alpha)`, t in ms.
+const THUMBS = {
+  // Randomized Hadamard rotation: Sylvester sign pattern, random column sign
+  // flips, and a sweeping row being "applied".
+  hadamard({ cols, rows, cell, t, state }) {
+    const n = 16;
+    const z = Math.max(1, Math.floor(Math.min(cols, rows) / n));
+    const ox = Math.floor((cols - n * z) / 2), oy = Math.floor((rows - n * z) / 2);
+    const block = (x, y, fill) => {
+      for (let j = 0; j < z; j++) for (let i = 0; i < z; i++) cell(ox + x * z + i, oy + y * z + j, fill);
+    };
+    const cycle = Math.floor(t / 4800);
+    if (state.cycle !== cycle) {
+      state.cycle = cycle;
+      state.signs = Array.from({ length: n }, () => 1);
+      state.flips = Array.from({ length: 5 }, (_, k) => ({ x: Math.floor(Math.random() * n), at: 600 + k * 650 }));
+    }
+    const local = t % 4800;
+    state.flips.forEach((f) => {
+      if (!f.done && local > f.at) { state.signs[f.x] *= -1; f.done = true; }
+    });
+    const sweep = Math.floor((local / 150) % (n + 6)) - 3;
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        let bits = x & y, parity = 0;
+        while (bits) { parity ^= bits & 1; bits >>= 1; }
+        const plus = (parity ? -1 : 1) * state.signs[x] > 0;
+        const lit = y === sweep;
+        const flash = state.flips.some((f) => f.x === x && local > f.at && local - f.at < 350);
+        if (plus) block(x, y, lit || flash ? palette.blueInk : palette.blueSoft);
+        else block(x, y, lit || flash ? palette.blueWash : '#e3e1da');
+      }
+    }
+  },
+
+  // A monotone score map slides the operating point along a fixed ROC curve;
+  // only a feature map lifts the curve itself.
+  roc({ cols, rows, cell, t }) {
+    const x0 = 2, y0 = rows - 3, w = cols - 4, h = rows - 5;
+    for (let x = 0; x <= w; x++) cell(x0 + x, y0 + 1, palette.ruleStrong);
+    for (let y = 0; y <= h; y++) cell(x0 - 1, y0 - y, palette.ruleStrong);
+    for (let i = 0; i <= w; i += 2) cell(x0 + i, Math.round(y0 - (i / w) * h), palette.rule);
+    const lift = (Math.sin(t / 1400) + 1) / 2;
+    const curve = (u, k) => 1 - Math.pow(1 - u, k);
+    for (let x = 0; x <= w; x++) {
+      const u = x / w;
+      cell(x0 + x, Math.round(y0 - curve(u, 2.2) * h), palette.blue);
+      cell(x0 + x, Math.round(y0 - curve(u, 2.2 + 2.6 * lift) * h), palette.blueSoft, 0.4 + 0.6 * lift);
+    }
+    const u = 0.15 + 0.6 * ((Math.sin(t / 900) + 1) / 2);
+    const px = x0 + Math.round(u * w), py = Math.round(y0 - curve(u, 2.2) * h);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) cell(px + dx, py + dy, palette.ink);
+  },
+
+  // First-moment erasure: two domains' means are pulled together, but the
+  // clouds keep their different shapes.
+  erasure({ cols, rows, cell, t, state }) {
+    state.a ??= Array.from({ length: 70 }, () => [rand(-1, 1) * 0.7, rand(-1, 1) * 2.2]);
+    state.b ??= Array.from({ length: 70 }, () => [rand(-1, 1) * 2.4, rand(-1, 1) * 0.6]);
+    const p = easeOut(clamp(((t % 6000) - 600) / 2600, 0, 1));
+    const gap = (1 - p) * cols * 0.26;
+    const cx = cols / 2, cy = rows / 2;
+    const k = rows / 7;
+    const draw = (pts, ox, color) => pts.forEach(([x, y]) => cell(Math.round(cx + ox + x * k), Math.round(cy + y * k), color, 0.85));
+    draw(state.a, -gap, palette.ink);
+    draw(state.b, gap, palette.blue);
+    [[-gap, palette.ink], [gap, palette.blueInk]].forEach(([ox, color]) => {
+      for (let k = -2; k <= 2; k++) {
+        cell(Math.round(cx + ox + k), Math.round(cy), color);
+        cell(Math.round(cx + ox), Math.round(cy + k), color);
+      }
+    });
+  },
+
+  // Agent traces with injected (blue) and natural (ink) failures; a monitor
+  // scans across the steps.
+  traces({ cols, rows, cell, t, state }) {
+    state.rows ??= Array.from({ length: Math.floor(rows / 2) }, () => {
+      const len = Math.floor(rand(cols * 0.45, cols - 2));
+      return { len, fail: Math.floor(rand(3, len - 1)), injected: Math.random() < 0.55 };
+    });
+    const scan = Math.floor((t / 70) % (cols + 10));
+    state.rows.forEach((trace, r) => {
+      const y = r * 2 + 1;
+      for (let x = 1; x < trace.len; x++) {
+        const isFail = x === trace.fail;
+        const seen = scan >= x;
+        if (isFail && seen) {
+          cell(x, y, trace.injected ? palette.blue : palette.ink);
+          cell(x + 1, y, trace.injected ? palette.blue : palette.ink);
+        } else if (x !== trace.fail + 1 || !seen) cell(x, y, x === scan ? palette.blueSoft : palette.rule);
+      }
+    });
+    for (let y = 0; y < rows; y++) cell(scan, y, palette.blueSoft, 0.35);
+  },
+
+  // The same answer twice: once in full (formal blocks in blue), once after an
+  // identity marker lights, where the formal blocks quietly drop out.
+  identity({ cols, rows, cell, t, state }) {
+    const half = Math.floor(cols / 2);
+    state.lines ??= Array.from({ length: Math.floor((rows - 4) / 2) }, () =>
+      Array.from({ length: half - 3 }, () => (Math.random() < 0.22 ? 'f' : Math.random() < 0.82 ? 'w' : ' ')),
+    );
+    const cycle = t % 7000;
+    const loss = clamp((cycle - 1200) / 3600, 0, 1);
+    const marker = cycle > 600 && cycle < 6400;
+    state.lines.forEach((line, i) => {
+      const y = 3 + i * 2;
+      line.forEach((kind, x) => {
+        if (kind === ' ') return;
+        cell(1 + x, y, kind === 'f' ? palette.blue : palette.ruleStrong);
+        const gone = kind === 'f' && i / state.lines.length < loss * 1.1;
+        cell(half + 1 + x, y, kind === 'f' ? (gone ? palette.ruleStrong : palette.blue) : palette.ruleStrong, gone ? 0.45 : 1);
+      });
+    });
+    cell(1, 1, palette.muted);
+    for (let k = 0; k < 3; k++) cell(half + 1 + k, 1, marker ? palette.blueInk : palette.rule);
+  },
+
+  // A leaderboard under increasing shift severity: two near-tied models swap.
+  rank({ cols, rows, cell, t, state }) {
+    const scores = [[0.92, 0.88], [0.85, 0.6], [0.83, 0.74], [0.6, 0.42]];
+    const sev = (Math.sin(t / 1500 - Math.PI / 2) + 1) / 2;
+    const now = scores.map(([a, b], i) => ({ i, v: a + (b - a) * sev }));
+    const order = [...now].sort((p, q) => q.v - p.v);
+    state.pos ??= now.map((_, i) => i);
+    order.forEach((bar, rank) => (state.pos[bar.i] += (rank - state.pos[bar.i]) * 0.12));
+    const band = Math.floor((rows - 4) / 4);
+    now.forEach(({ i, v }) => {
+      const y = 1 + Math.round(state.pos[i] * band);
+      const len = Math.round(v * (cols - 4));
+      const tone = i === 1 || i === 2 ? palette.blue : palette.blueSoft;
+      for (let x = 0; x < len; x++) for (let k = 0; k < band - 1; k++) cell(2 + x, y + k, tone, i === 1 || i === 2 ? 1 : 0.8);
+    });
+    const levels = 5;
+    for (let s = 0; s < levels; s++) cell(2 + s * 2, rows - 2, s / (levels - 1) <= sev + 0.01 ? palette.ink : palette.rule);
+  },
+
+  // Rotary position encoding as a field of dials turning at different
+  // frequencies; the first-order "jet" adds a small wobble.
+  rope({ cols, rows, cell, t }) {
+    const nx = 4, ny = 3;
+    const r = Math.min(cols / nx, rows / ny) / 2 - 1.2;
+    for (let j = 0; j < ny; j++) {
+      for (let i = 0; i < nx; i++) {
+        const cx = (i + 0.5) * (cols / nx), cy = (j + 0.5) * (rows / ny);
+        for (let a = 0; a < 40; a++) {
+          const th = (a / 40) * Math.PI * 2;
+          cell(Math.round(cx + Math.cos(th) * r), Math.round(cy + Math.sin(th) * r), palette.ruleStrong);
+        }
+        const k = j * nx + i;
+        const freq = Math.pow(0.62, k) * 0.004;
+        const angle = t * freq + k + 0.25 * Math.sin(t / 700 + k) * (j === ny - 1 ? 1 : 0);
+        for (let s = 0; s <= r; s += 0.5) {
+          cell(Math.round(cx + Math.cos(angle) * s), Math.round(cy + Math.sin(angle) * s), j === ny - 1 ? palette.blueInk : palette.blue);
+        }
+      }
+    }
+  },
+};
+
+function initThumb(canvas) {
+  const draw = THUMBS[canvas.dataset.thumb];
+  if (!draw) return;
+  const pitch = 5;
+  const state = {};
+  let w = 0, h = 0, cols = 0, rows = 0, ctx;
+  const build = () => {
+    const box = canvas.getBoundingClientRect();
+    w = box.width;
+    h = box.height;
+    if (!w || !h) return;
+    ctx = fitCanvas(canvas, w, h);
+    cols = Math.floor(w / pitch);
+    rows = Math.floor(h / pitch);
+  };
+  const cell = (x, y, fill, alpha = 1) => {
+    if (x < 0 || y < 0 || x >= cols || y >= rows) return;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = fill;
+    ctx.fillRect((w - cols * pitch) / 2 + x * pitch + 0.5, (h - rows * pitch) / 2 + y * pitch + 0.5, pitch - 1.5, pitch - 1.5);
+    ctx.globalAlpha = 1;
+  };
+  const frame = (t) => {
+    if (!ctx) return;
+    ctx.fillStyle = palette.paper2;
+    ctx.fillRect(0, 0, w, h);
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) cell(x, y, '#e8e6e0');
+    draw({ cols, rows, cell, t, state });
+  };
+  build();
+  new ResizeObserver(() => {
+    const box = canvas.getBoundingClientRect();
+    if (Math.abs(box.width - w) > 1 || Math.abs(box.height - h) > 1) build();
+  }).observe(canvas);
+  if (reduced) frame(2400);
+  else visibleLoop(canvas, frame);
+}
+
 /* ---------- Research index: scrollspy with a sliding chip ------------- */
 
 function initIndexNav(nav) {
@@ -911,5 +1112,6 @@ document.querySelectorAll('canvas[data-transit]').forEach(initTransit);
 document.querySelectorAll('canvas[data-sign]').forEach(initSign);
 document.querySelectorAll('canvas[data-packing]').forEach(initPacking);
 document.querySelectorAll('canvas[data-descent]').forEach(initDescent);
+document.querySelectorAll('canvas[data-thumb]').forEach(initThumb);
 document.querySelectorAll('[data-index-nav]').forEach(initIndexNav);
 document.querySelectorAll('[data-filters]').forEach(initFilters);

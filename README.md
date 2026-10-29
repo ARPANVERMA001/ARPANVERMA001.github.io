@@ -5,6 +5,7 @@ Personal site of Arpan Verma. Plain HTML, CSS and JavaScript with no build step,
 ```
 index.html            Home: opening sequence, selected work, about
 research/index.html   Research areas with live figures
+publications/index.html  Accepted papers with animated pixel thumbnails
 projects/index.html   All projects, filterable
 about/index.html      Education, experience, skills, interests
 404.html              Not-found page
@@ -20,6 +21,9 @@ assets/js/home.js     Home opening: name scramble, typist, lanes
   `.wm-face` / `.wm-echo` pair; keep the two texts identical.
 - **Greeting slip**: the typist deliberately mistypes one word. It's set by
   `slip: 'science'` in `assets/js/home.js`.
+- **Publications** are `<article class="pub">` blocks. Each thumbnail is a
+  `<canvas data-thumb="…">`; the motifs (`hadamard`, `roc`, `erasure`, `traces`,
+  `identity`, `rank`, `rope`) live in `THUMBS` in `assets/js/site.js`.
 - **LED signs**: change the `data-sign` text on the canvas. The dot font supports A–Z, 0–9, space, `·`, `+` and `&`.
 - **Colors**: edit the custom properties at the top of `assets/css/site.css`.
 - **Replay the opening**: it plays once per tab. Open a new tab or run `sessionStorage.clear()`.

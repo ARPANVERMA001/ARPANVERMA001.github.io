@@ -16,6 +16,13 @@ const litLayer = baseLayer.cloneNode(true);
 litLayer.classList.add('lit');
 lanes.append(litLayer);
 
+// The base tracks began animating as soon as CSS applied; restart every track in
+// the same frame so the spotlight copy stays glyph-for-glyph on top of the base.
+const tracks = lanes.querySelectorAll('.lane-track');
+tracks.forEach((track) => (track.style.animationName = 'none'));
+void lanes.offsetWidth;
+tracks.forEach((track) => (track.style.animationName = ''));
+
 /* ---------- Typist ----------------------------------------------------- */
 
 const COMMON = new Set(

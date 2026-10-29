@@ -1,715 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arpan Verma - Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- For interactive data visualizations -->
-    <!-- <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #1a1a1d;
-            color: #f1f1f1;
-            scroll-behavior: smooth;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background: linear-gradient(135deg, #162447, #1f4068);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-            transition: 0.3s;
-        }
-        header.scrolled {
-            background: linear-gradient(135deg, #0f2a55, #162447);
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            color: #e43f5a;
-            text-shadow: 2px 2px 10px rgba(228, 63, 90, 0.8);
-        }
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        nav ul li {
-            margin: 0 15px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #f1f1f1;
-            transition: color 0.3s ease;
-        }
-        nav ul li a:hover {
-            color: #e43f5a;
-            text-shadow: 0 0 8px rgba(228, 63, 90, 0.8);
-        }
-        section {
-            padding: 100px 0;
-            text-align: center;
-        }
-        .hero {
-            background: linear-gradient(rgba(26, 26, 29, 0.8), rgba(26, 26, 29, 0.8));
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            position: relative;
-        }
-        .hero h1 {
-            font-size: 56px;
-            z-index: 1;
-            position: relative;
-            animation: fadeIn 1.5s ease-in-out;
-            text-shadow: 2px 2px 20px rgba(228, 63, 90, 0.9);
-        }
-        .hero p {
-            font-size: 24px;
-            margin-top: 20px;
-            z-index: 1;
-            position: relative;
-            animation: fadeIn 2s ease-in-out;
-            color: #ffcccb;
-        }
-        .hero button {
-            margin-top: 40px;
-            padding: 15px 30px;
-            border: none;
-            background: #e43f5a;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 1;
-            position: relative;
-            transition: background 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 20px rgba(228, 63, 90, 0.6);
-        }
-        .hero button:hover {
-            background: #f06b88;
-            box-shadow: 0 6px 30px rgba(228, 63, 90, 1);
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Section Styling */
-        .about, .skills, .projects, .contact, .blog, .resume, .testimonials {
-            background: #162447;
-            padding: 80px 50px;
-            position: relative;
-            overflow: hidden;
-        }
-        .about:before, .skills:before, .projects:before, .contact:before, .blog:before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 69, 112, 0.3), transparent);
-            top: -50%;
-            left: -50%;
-            animation: glow 5s infinite linear;
-            opacity: 0.2;
-        }
-
-        @keyframes glow {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        h2 {
-            font-size: 36px;
-            margin-bottom: 40px;
-            position: relative;
-            color: #e43f5a;
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-        h2:before {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: #e43f5a;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-        .content {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            position: relative;
-        }
-        .card {
-            background: #1a1a1d;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px;
-            width: 350px;
-            text-align: left;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        }
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(228, 63, 90, 0.6);
-        }
-        .card h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #e43f5a;
-        }
-        .card p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        /* Contact Section */
-        .contact p {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        .contact a {
-            color: #e43f5a;
-            text-decoration: none;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-        .contact a:hover {
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-            color: #f1f1f1;
-        }
-
-        /* Footer */
-        footer {
-            background: #1f4068;
-            padding: 20px;
-            text-align: center;
-        }
-        footer p {
-            color: #f1f1f1;
-        }
-        footer a {
-            color: #e43f5a;
-            text-decoration: none;
-            margin: 0 15px;
-            transition: 0.3s;
-        }
-        footer a:hover {
-            color: #f06b88;
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-
-        /* 3D animation canvas */
-        #clusterCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 0;
-        }
-    </style> -->
-    <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #1a1a1d;
-            color: #f1f1f1;
-            scroll-behavior: smooth;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background: linear-gradient(135deg, #162447, #1f4068);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-            transition: 0.3s;
-        }
-        header.scrolled {
-            background: linear-gradient(135deg, #0f2a55, #162447);
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            color: #e43f5a;
-            text-shadow: 2px 2px 10px rgba(228, 63, 90, 0.8);
-        }
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        nav ul li {
-            margin: 0 15px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #f1f1f1;
-            transition: color 0.3s ease;
-        }
-        nav ul li a:hover {
-            color: #e43f5a;
-            text-shadow: 0 0 8px rgba(228, 63, 90, 0.8);
-        }
-        section {
-            padding: 100px 0;
-            text-align: center;
-        }
-        .hero {
-            background: linear-gradient(rgba(26, 26, 29, 0.8), rgba(26, 26, 29, 0.8));
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            position: relative;
-        }
-        .hero h1 {
-            font-size: 56px;
-            z-index: 1;
-            position: relative;
-            animation: fadeIn 1.5s ease-in-out;
-            text-shadow: 2px 2px 20px rgba(228, 63, 90, 0.9);
-        }
-        .hero p {
-            font-size: 24px;
-            margin-top: 20px;
-            z-index: 1;
-            position: relative;
-            animation: fadeIn 2s ease-in-out;
-            color: #ffcccb;
-        }
-        .hero button {
-            margin-top: 40px;
-            padding: 15px 30px;
-            border: none;
-            background: #e43f5a;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            z-index: 1;
-            position: relative;
-            transition: background 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 20px rgba(228, 63, 90, 0.6);
-        }
-        .hero button:hover {
-            background: #f06b88;
-            box-shadow: 0 6px 30px rgba(228, 63, 90, 1);
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-    
-        /* Section Styling */
-        .about, .skills, .projects, .contact, .blog, .resume, .testimonials {
-            background: #162447;
-            padding: 80px 50px;
-            position: relative;
-            overflow: hidden;
-        }
-        .about:before, .skills:before, .projects:before, .contact:before, .blog:before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 69, 112, 0.3), transparent);
-            top: -50%;
-            left: -50%;
-            animation: glow 5s infinite linear;
-            opacity: 0.2;
-        }
-    
-        @keyframes glow {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-    
-        h2 {
-            font-size: 36px;
-            margin-bottom: 40px;
-            position: relative;
-            color: #e43f5a;
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-        h2:before {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: #e43f5a;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-        .content {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            position: relative;
-        }
-        .card {
-            background: #1a1a1d;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px;
-            width: 350px;
-            text-align: left;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-        }
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(228, 63, 90, 0.6);
-        }
-        .card h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #e43f5a;
-        }
-        .card p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-    
-        /* Contact Section */
-        .contact p {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-        .contact a {
-            color: #e43f5a;
-            text-decoration: none;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-        .contact a:hover {
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-            color: #f1f1f1;
-        }
-    
-        /* Footer */
-        footer {
-            background: #1f4068;
-            padding: 20px;
-            text-align: center;
-        }
-        footer p {
-            color: #f1f1f1;
-        }
-        footer a {
-            color: #e43f5a;
-            text-decoration: none;
-            margin: 0 15px;
-            transition: 0.3s;
-        }
-        footer a:hover {
-            color: #f06b88;
-            text-shadow: 0 0 10px rgba(228, 63, 90, 0.8);
-        }
-    
-        /* 3D animation canvas */
-        #clusterCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: 0;
-        }
-    </style>    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arpan Verma — Optimization &amp; Machine Learning</title>
+  <meta name="description" content="Arpan Verma is a Computer Science and AI undergraduate at IIIT Delhi working on optimization and machine learning for urban transit and logistics.">
+  <meta name="theme-color" content="#f6f5f1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Arpan Verma — Optimization &amp; Machine Learning">
+  <meta property="og:description" content="Optimization and machine learning for urban transit and logistics.">
+  <meta property="og:url" content="https://arpanverma001.github.io/">
+  <link rel="canonical" href="https://arpanverma001.github.io/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap">
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <script>
+    (() => {
+      const r = document.documentElement;
+      r.classList.add('js');
+      let seen = false;
+      try { seen = sessionStorage.getItem('av-opened') === '1'; } catch {}
+      if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      r.classList.add('opening');
+      try { if (document.referrer && new URL(document.referrer).origin === location.origin) r.classList.add('keep-header'); } catch {}
+      setTimeout(() => r.classList.remove('opening'), 9000);
+    })();
+  </script>
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+    <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></symbol>
+    <symbol id="i-lab" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7.5 15h9"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  </svg>
 
-<header>
-    <div class="logo">Arpan Verma</div>
-    <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#resume">Resume</a></li>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="site-mark" href="/" aria-label="Arpan Verma, home">Arpan Verma<span class="dot">.</span></a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/research/">Research</a>
+        <a href="/projects/">Projects</a>
+        <a href="/about/">About</a>
+      </nav>
+    </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
+  </header>
+
+  <main id="main">
+    <section class="hero container">
+      <div class="hero-identity">
+        <div class="plate">
+          <canvas data-transit data-reveal aria-label="Animated pixel map of a bus network: buses travel between stops while routes re-optimize." role="img"></canvas>
+        </div>
+        <h1 class="hero-name">
+          <span class="name-line"><span class="name-text">Arpan</span></span>
+          <span class="name-line"><span class="name-text">Verma</span></span>
+        </h1>
+        <div class="name-marks" aria-hidden="true"><i></i><i></i><i></i></div>
+        <ul class="contacts" data-opening-part="contacts">
+          <li><a href="mailto:arpan22105@iiitd.ac.in" style="--i:0"><svg class="icon"><use href="#i-mail"/></svg>Email</a></li>
+          <li><a href="https://github.com/ARPANVERMA001" style="--i:1"><svg class="icon"><use href="#i-github"/></svg>GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/arpvr/" style="--i:2"><svg class="icon"><use href="#i-linkedin"/></svg>LinkedIn</a></li>
+          <li><a href="https://www.iiitd.ac.in/praveshb" style="--i:3"><svg class="icon"><use href="#i-lab"/></svg>Lab</a></li>
         </ul>
-    </nav>
-</header>
+      </div>
 
-<section class="hero">
-    <canvas id="clusterCanvas"></canvas>
-    <h1>Arpan Verma</h1>
-    <p>Research, code, and innovate.</p>
-    <button>Explore Now</button>
-</section>
+      <div class="hero-copy">
+        <p class="eyebrow" data-opening-part="eyebrow">B.Tech · Computer Science &amp; Artificial Intelligence</p>
+        <p class="affil" data-opening-part="eyebrow">Indraprastha Institute of Information Technology, Delhi</p>
+        <p class="greeting" data-opening-part="greeting">Hello, this is Arpan Verma, a computer science undergraduate.</p>
+        <p class="bio" data-opening-part="bio">I work where mathematical optimization meets machine learning, building methods that make real systems, from city bus networks to supply-chain logistics, run faster and use less.</p>
 
-<section class="about" id="about">
-    <h2>About Me</h2>
-    <div class="content">
-        <div class="card">
-            <h3>Who am I?</h3>
-            <p>A developer with a passion for crafting innovative solutions...</p>
+        <ul class="sr-only">
+          <li>Integer programming</li>
+          <li>Machine learning</li>
+          <li>Urban mobility</li>
+        </ul>
+        <div class="lanes" aria-hidden="true">
+          <div class="lanes-layer">
+            <div class="lane" data-opening-part="lane"><div class="lane-track" style="--dur:46s"><span>Integer programming</span><span>Integer programming</span><span>Integer programming</span><span>Integer programming</span></div></div>
+            <div class="lane" data-opening-part="lane"><div class="lane-track" style="--dur:38s;--dir:reverse"><span>Machine learning</span><span>Machine learning</span><span>Machine learning</span><span>Machine learning</span><span>Machine learning</span></div></div>
+            <div class="lane" data-opening-part="lane"><div class="lane-track" style="--dur:54s"><span>Urban mobility</span><span>Urban mobility</span><span>Urban mobility</span><span>Urban mobility</span><span>Urban mobility</span></div></div>
+          </div>
         </div>
+
+        <a class="action" href="/research/" data-opening-part="action">View research <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </div>
+    </section>
+
+    <section class="section container" aria-labelledby="work-title">
+      <div class="section-head" data-arrive><h2 class="kicker" id="work-title">Selected work</h2></div>
+
+      <article class="work" data-project>
+        <div class="work-plate"><div class="wordmark" data-wordmark aria-hidden="true"><span class="wm-glyphs"><span class="wm-face">Transit</span><span class="wm-echo">Transit</span></span></div></div>
+        <div class="work-body">
+          <h3 data-arrive>Optimizing Urban Bus Transit with Perturbation Analysis and Integer Programming</h3>
+          <p class="meta" data-arrive>B.Tech thesis · Mobility and Optimization Lab, IIIT Delhi · 2024–present</p>
+          <p class="desc" data-arrive>Analyzes more than a million passenger trips and develops perturbation-analysis and integer-programming methods that optimize public-transit routes to minimize passengers' estimated time of arrival.</p>
+          <div class="work-links" data-arrive><a href="/research/#transit">Read more</a><a href="https://www.iiitd.ac.in/praveshb">Advisor</a></div>
+        </div>
+      </article>
+
+      <article class="work" data-project>
+        <div class="work-plate"><div class="wordmark" data-wordmark aria-hidden="true"><span class="wm-glyphs"><span class="wm-face">LoadLogic</span><span class="wm-echo">LoadLogic</span></span></div></div>
+        <div class="work-body">
+          <h3 data-arrive>LoadLogic: 3D Truck-Load Optimization for Supply Chains</h3>
+          <p class="meta" data-arrive>Walmart Sparkathon</p>
+          <p class="desc" data-arrive>A three-dimensional packing optimizer built on linear integer programming, paired with an interactive Three.js view, that maximizes how much of a truck's space each shipment uses.</p>
+          <div class="work-links" data-arrive><a href="https://youtu.be/cB94LV6fMFc">Demo video</a><a href="/research/#packing">Read more</a></div>
+        </div>
+      </article>
+
+      <article class="work" data-project>
+        <div class="work-plate"><div class="wordmark" data-wordmark aria-hidden="true"><span class="wm-glyphs"><span class="wm-face">EPOCH</span><span class="wm-echo">EPOCH</span></span></div></div>
+        <div class="work-body">
+          <h3 data-arrive>Optimized Pipeline Construction with Gradient-Based Methods</h3>
+          <p class="meta" data-arrive>EPOCH Hackathon, winner · Infosys Centre for AI · March 2024</p>
+          <p class="desc" data-arrive>With a team of four, built an optimized pipeline-construction model driven by gradient descent and the Adam optimizer, and took first place.</p>
+          <div class="work-links" data-arrive><a href="https://github.com/ARPANVERMA001/EpochHackathon">Code</a></div>
+        </div>
+      </article>
+
+      <article class="work" data-project>
+        <div class="work-plate"><div class="wordmark" data-wordmark aria-hidden="true"><span class="wm-glyphs"><span class="wm-face">Traffic</span><span class="wm-echo">Traffic</span></span></div></div>
+        <div class="work-body">
+          <h3 data-arrive>Traffic Flow Prediction and Adaptive Signal Timing</h3>
+          <p class="meta" data-arrive>Machine learning project</p>
+          <p class="desc" data-arrive>Forecasts traffic at intersections with LDA, random forests, XGBoost and LSTMs, then feeds those forecasts into a signal-timing system that reduced average wait time by 42%.</p>
+          <div class="work-links" data-arrive><a href="https://github.com/ARPANVERMA001/Traffic-Prediction-and-Management">Code</a></div>
+        </div>
+      </article>
+
+      <div data-arrive style="margin-top:48px"><a class="action" href="/projects/">All projects <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+    </section>
+
+    <section class="section container" aria-labelledby="about-title">
+      <div class="section-head" data-arrive><h2 class="kicker" id="about-title">About</h2></div>
+      <div class="about-split">
+        <div>
+          <div class="prose">
+            <p data-arrive>I'm a B.Tech student in Computer Science and Artificial Intelligence at IIIT Delhi. For my thesis I work in the Mobility and Optimization Lab with <a href="https://www.iiitd.ac.in/praveshb">Dr. Pravesh Biyani</a>, on making urban bus transit faster for the people who ride it.</p>
+            <p data-arrive>I like problems that sit between a clean mathematical model and a messy real system. I've built ML pipelines, packing optimizers, a memory allocator and a <a href="/projects/">small arcade game</a> along the way. Away from the terminal, I play the piano, write poems and read about geopolitics.</p>
+          </div>
+          <div data-arrive><a class="action" href="/about/">More about me <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+        </div>
+        <figure class="sign" data-arrive="side">
+          <canvas data-sign="Optimization · Machine learning · Urban mobility · " data-cols="64" role="img" aria-label="Dot-matrix sign scrolling: Optimization, Machine learning, Urban mobility."></canvas>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="footer-mark" href="/">Arpan Verma<span class="dot">.</span></a>
+        <p class="meta">New Delhi, India · © 2026</p>
+      </div>
+      <nav class="footer-links" aria-label="Contact">
+        <a href="mailto:arpan22105@iiitd.ac.in"><svg class="icon"><use href="#i-mail"/></svg>Email</a>
+        <a href="https://github.com/ARPANVERMA001"><svg class="icon"><use href="#i-github"/></svg>GitHub</a>
+        <a href="https://www.linkedin.com/in/arpvr/"><svg class="icon"><use href="#i-linkedin"/></svg>LinkedIn</a>
+      </nav>
     </div>
-</section>
+  </footer>
 
-<section id="about" class="about">
-    <h2>About Me</h2>
-    <div class="content">
-        <div class="card">
-            <h3>Education</h3>
-            <p>
-                <strong>B.Tech in Computer Science and Artificial Intelligence</strong><br>
-                Indraprastha Institute of Information Technology, Delhi<br>
-                2022 – Present<br>
-                
-                <strong>High School:</strong><br>
-                Heeralal Public School, Delhi - Class XII (2021-2022)<br>
-                Delhi Public School, Etawah - Class X (2019-2020)
-            </p>
-        </div>
-        <div class="card">
-            <h3>Research Experience</h3>
-            <p>
-                <strong>Mobility and Optimization Lab | Researcher</strong> <br>
-                B.Tech Thesis | June 2024 - Ongoing <br>
-                <ul>
-                    <li>Optimizing urban bus transit systems using perturbation analysis and integer programming.</li>
-                    <li>Analyzing over 1 million passenger trips and minimizing ETA.</li>
-                    <li>Developing algorithms to optimize routes for public transit.</li>
-                </ul>
-                Guide: <a href="https://www.iiitd.ac.in/praveshb" target="_blank">Dr. Pravesh Biyani</a>
-            </p>
-        </div>
-        <div class="card">
-            <h3>Interests</h3>
-            <p>
-                Machine Learning, Optimization, Artificial Intelligence, Geopolitics, Piano, Problem Solving, Writing Poems.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section id="skills" class="skills">
-    <h2>Skills</h2>
-    <div class="content">
-        <div class="card">
-            <h3>Expertise Area</h3>
-            <p>Machine Learning, Artificial Intelligence, Optimization, Data Structures, Algorithms, DBMS</p>
-        </div>
-        <div class="card">
-            <h3>Programming Languages</h3>
-            <p>Java, Python, C, C++, JavaScript, AMPL</p>
-        </div>
-        <div class="card">
-            <h3>Technologies & Tools</h3>
-            <p>TensorFlow, PyTorch, Scikit-learn, Flask, MySQL, SQLite, GTFS, Gurobi, Jupyter notebooks, Git</p>
-        </div>
-        <div class="card">
-            <h3>Machine Learning Models</h3>
-            <p>LDA, QDA, K-Means Clustering, CNN, RNN, ANN, Decision Trees, LSTM, GANs, ARIMA, Time Series Models</p>
-        </div>
-    </div>
-</section>
-<!-- 
-<section id="projects" class="projects">
-    <h2>Projects</h2>
-    <div class="content">
-        <div class="card project">
-            <h3>Traffic Flow Management</h3>
-            <p>Used regression models like LDA, Random Forest, XGBoost, LSTM to predict traffic at intersections and developed an efficient traffic signal timer system, reducing average wait time by 42%.<br><a href="https://github.com/ARPANVERMA001/Traffic-Prediction-and-Management">GitHub Link</a></p>
-        </div>
-        <div class="card project">
-            <h3>ProdSnap-AI</h3>
-            <p>Developed an OCR system using OpenCV and Tesseract for product image detection, improving OCR precision by 30%. Processed 300K product images using contour detection.<br><a href="https://github.com/ARPANVERMA001/ProdSnap-AI.git">GitHub Link</a></p>
-        </div>
-        <div class="card project">
-            <h3>Real-time Bus Tracking System</h3>
-            <p>Implemented a web application using Flask and SQLite to serve real-time bus data from Delhi’s open transit API in GTFS format.<br><a href="https://github.com/ARPANVERMA001/mini_proj">GitHub Link</a></p>
-        </div>
-        <div class="card project">
-            <h3>Ensemble-Models</h3>
-            <p>Developed supervised learning models from scratch, achieving 99.6% accuracy on MNIST dataset. Built decision trees and engineered AdaBoost and Gradient Boosting algorithms for regression.<br><a href="https://github.com/ARPANVERMA001/Ensemble-Models.git">GitHub Link</a></p>
-        </div>
-    </div>
-</section> -->
-
-
-<section id="projects" class="projects">
-    <h2>Projects</h2>
-    <div class="content">
-        <div class="card project">
-            <h3>Traffic Flow Management</h3>
-            <p>Used regression models like LDA, Random Forest, XGBoost, and LSTM to predict traffic at intersections and developed an efficient traffic signal timer system, reducing average wait time by 42%.<br>
-                <a href="https://github.com/ARPANVERMA001/Traffic-Prediction-and-Management">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>ProdSnap-AI</h3>
-            <p>Developed an OCR system using OpenCV and Tesseract for product image detection, improving OCR precision by 30%. Processed 300K product images using contour detection.<br>
-                <a href="https://github.com/ARPANVERMA001/ProdSnap-AI.git">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>Real-time Bus Tracking System</h3>
-            <p>Implemented a web application using Flask and SQLite to serve real-time bus data from Delhi’s open transit API in GTFS format.<br>
-                <a href="https://github.com/ARPANVERMA001/mini_proj">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>Ensemble-Models</h3>
-            <p>Developed supervised learning models from scratch, achieving 99.6% accuracy on MNIST dataset. Built decision trees and engineered AdaBoost and Gradient Boosting algorithms for regression.<br>
-                <a href="https://github.com/ARPANVERMA001/Ensemble-Models.git">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>MeMS: Custom Memory Management System</h3>
-            <p>Implemented a custom memory management system in C using mmap and munmap system calls for memory allocation and deallocation.<br>
-                <a href="https://github.com/ARPANVERMA001/MeMS">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>Stick Hero - JavaFX Game</h3>
-            <p>Created a retro arcade game in JavaFX where players control a Stick-Hero with an infinitely incrementing stick. Features bonuses like cherries that increase the score.<br>
-                <a href="https://github.com/ARPANVERMA001/AP_PROJECT">GitHub Link</a>
-            </p>
-        </div>
-        <div class="card project">
-            <h3>LoadLogic: Walmart Sparkathon</h3>
-            <p>Developed a 3D packing optimization system using linear integer programming and Three.js to optimize truck space utilization in supply chains.<br>
-                <a href="https://youtu.be/cB94LV6fMFc">Demo Video</a>
-            </p>
-        </div>
-    </div>
-</section>
-
-<section id="awards" class="awards">
-    <h2>Awards and Achievements</h2>
-    <div class="content">
-        <div class="card">
-            <h3>EPOCH Hackathon Winner</h3>
-            <p>March 2024 | Infosys Centre for AI | Team Size: 4 <br>
-            Developed an optimized pipeline construction model using gradient descent and Adam optimizer.<br>
-            <a href="https://github.com/ARPANVERMA001/EpochHackathon">GitHub Link</a></p>
-        </div>
-    </div>
-</section>
-
-<!-- Additional sections for skills, projects, etc. -->
-<footer>
-    <p>&copy; 2024 Arpan Verma</p>
-    <a href="https://www.linkedin.com/in/arpvr/">LinkedIn</a>
-    <a href="https://github.com/ARPANVERMA001?tab=repositories">GitHub</a>
-    <a href="mailto:arpan22105@iiitd.ac.in">Email</a>
-</footer>
-
-<!-- JavaScript for scrolling effects -->
-<script>
-    window.addEventListener('scroll', function() {
-        const header = document.querySelector('header');
-        if (window.pageYOffset > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-</script>
-
-<!-- Include your 3D animation logic here -->
-
-<script>
-    // 3D Cluster Animation with Cubes using Three.js
-    const canvas = document.querySelector('#clusterCanvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const scene = new THREE.Scene();
-    
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
-
-    // Cube geometry instead of spheres
-    const geometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
-    const material = new THREE.MeshStandardMaterial({ color: 0xe43f5a, metalness: 0.5, roughness: 0.2 });
-    
-    // Add lighting to make it visually appealing
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); 
-    scene.add(ambientLight);
-
-    const pointLight = new THREE.PointLight(0xe43f5a, 1);
-    pointLight.position.set(10, 10, 10);
-    scene.add(pointLight);
-
-    const cluster = [];
-
-    for (let i = 0; i < 500; i++) {
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.x = (Math.random() - 0.5) * 10;
-        cube.position.y = (Math.random() - 0.5) * 10;
-        cube.position.z = (Math.random() - 0.5) * 10;
-        scene.add(cube);
-        cluster.push(cube);
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
-        cluster.forEach(c => {
-            c.rotation.x += 0.01;
-            c.rotation.y += 0.01;
-        });
-        renderer.render(scene, camera);
-    }
-
-
-    document.addEventListener('mousemove', (event) => {
-        const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        cluster.forEach(c => {
-            c.position.x += mouseX * 0.05;
-            c.position.y += mouseY * 0.05;
-        });
-    });
-
-    animate();
-
-    window.addEventListener('resize', () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        renderer.setSize(width, height);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-    });
-
-</script>
+  <script type="module" src="/assets/js/site.js"></script>
+  <script type="module" src="/assets/js/home.js"></script>
 </body>
 </html>
